@@ -2,7 +2,7 @@ $('.ghae-register-link').click((event) => {
   event.preventDefault();
   let ghaeUrl = document.getElementById('ghae_url_id').value;
   if(ghaeUrl == '' || !validateGhaeUrl(ghaeUrl)){
-    document.getElementById("errormessage").innerHTML = 'Please enter valid url !!!';
+    document.getElementById("errormessage").innerHTML = 'Invalid GitHub AE instance url !!!';
     return false;
   }
 

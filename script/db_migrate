@@ -6,4 +6,4 @@ set -e
 
 PATH="$PATH:node_modules/.bin"
 
-sequelize db:create --env production || true
+sequelize db:migrate --env production

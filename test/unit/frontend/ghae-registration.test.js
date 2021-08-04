@@ -35,18 +35,12 @@ describe('Frontend', () => {
       it('should return 400 for register if ghaeHost parameter missing', () => supertest(subject)
         .post('/register')
         .send({})
-        .expect(400)
-        .then(response => {
-          expect(response.body.err).toBe('Invalid GitHub AE instance url !!!');
-        }));
+        .expect(400));
 
       it('should return 400 for register if invalid ghaeHost parameter', () => supertest(subject)
         .post('/register?ghaeHost=ghaebuild4123test.ghaekube.com')
         .send({})
-        .expect(400)
-        .then(response => {
-          expect(response.body.err).toBe('Invalid GitHub AE instance url !!!');
-        }));
+        .expect(400));
 
       it('should return 200 for register', () => supertest(subject)
         .post('/register?ghaeHost=ghaebuild4123test.ghaekube.net')

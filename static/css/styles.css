@@ -94,3 +94,7 @@
   color: #0366d6 !important;
   text-decoration: none;
 }
+
+.inline-error-message {
+  color: #d04437;
+}

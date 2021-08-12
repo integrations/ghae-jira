@@ -5,7 +5,7 @@ process.env.STORAGE_SECRET = 'test-secret';
 
 describe('test installation model', () => {
   const newInstallPayload = {
-    key: 'com.github.integration.production',
+    key: 'githubae.integration.production',
     clientKey: 'a-totally-unique-client-key',
     publicKey: 'this-is-a-public-key',
     sharedSecret: 'shared-secret',
@@ -19,7 +19,7 @@ describe('test installation model', () => {
 
   // this payload is identical to newInstallPayload except for a renamed `baseUrl`
   const renamedInstallPayload = {
-    key: 'com.github.integration.production',
+    key: 'githubae.integration.production',
     clientKey: 'a-totally-unique-client-key', // This is the same clientKey as above
     publicKey: 'this-is-a-public-key',
     sharedSecret: 'shared-secret',
@@ -33,7 +33,7 @@ describe('test installation model', () => {
 
   // Setup an installation
   const existingInstallPayload = {
-    key: 'com.github.integration.production',
+    key: 'githubae.integration.production',
     clientKey: 'a-totally-unique-client-key',
     publicKey: 'this-is-a-public-key',
     sharedSecret: 'shared-secret',

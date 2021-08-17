@@ -106,22 +106,6 @@ beforeEach(async () => {
       content: Buffer.from(`jira: ${process.env.GHAE_URL}`).toString('base64'),
     });
 
-  /* nock('https://appinstalled.ghaekube.net')
-    .post('/api/v3/app-manifests/1234567/conversions')
-    .reply(404, {
-      message: 'Not Found',
-      documentation_url: 'https://docs.github.com/github-ae@latest/rest/reference/apps#create-a-github-app-from-a-manifest',
-    })
-    .post('/api/v3/app-manifests/12345/conversions')
-    .reply(200, {
-      client_id: 'client-id',
-      client_secret: 'client-secret',
-      private_key: 'private-key',
-      id: 1,
-      html_url: 'https://appinstalled.ghaekube.net/github-apps/jira-app-testing',
-      webhook_secret: 'webhook-secret',
-    }); */
-
   nock('https://ghaebuild4123test.ghaekube.net')
     .post('/api/v3/app-manifests/1234567/conversions')
     .reply(404, {

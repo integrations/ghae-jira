@@ -18,6 +18,8 @@ const defaults = Object.assign({
   SETUP: 'yes', // indicates that the setup did run
   TRACKING_DISABLED: 'true',
   GHAE_URL: 'ghaebuild4123test.ghaekube.net',
+  GHAE_HOST: 'abc.ghaekube.net',
+  GITHUB_INSTANCE: 'ghae',
 }, process.env);
 
 Object.assign(process.env, defaults);

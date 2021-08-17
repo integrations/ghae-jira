@@ -73,6 +73,12 @@ function nockBranchRequst(payload) {
   nock('https://api.github.com')
     .post('/graphql', branchesWithLastCursor)
     .reply(200, emptyNodesFixture);
+  nock('https://abc.ghaekube.net')
+    .post('/api/graphql', branchesNoLastCursor)
+    .reply(200, payload);
+  nock('https://abc.ghaekube.net')
+    .post('/api/graphql', branchesWithLastCursor)
+    .reply(200, emptyNodesFixture);
 }
 
 describe('sync/branches', () => {
@@ -82,6 +88,7 @@ describe('sync/branches', () => {
   let delay;
 
   beforeEach(() => {
+    jest.setTimeout(30000);
     const models = td.replace('../../../lib/models');
     const repoSyncStatus = {
       installationId: 12345678,
@@ -132,20 +139,20 @@ describe('sync/branches', () => {
     const branchNodesFixture = require('../../fixtures/api/graphql/branch-ref-nodes.json');
     nockBranchRequst(branchNodesFixture);
 
-    // const queues = {
-    // installation: {
-    // add: jest.fn(),
-    // },
-    // };
-    // await processInstallation(queues)(job);
-    // expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
+    const queues = {
+      installation: {
+        add: jest.fn(),
+      },
+    };
+    await processInstallation(queues)(job);
+    expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
 
-    // td.verify(
-    // jiraApi.post('/rest/devinfo/0.10/bulk', makeExpectedResponse({ branchName: 'TES-321-branch-name' })),
-    // );
+    td.verify(
+      jiraApi.post('/rest/devinfo/0.10/bulk', makeExpectedResponse({ branchName: 'TES-321-branch-name' })),
+    );
   });
 
-  /* test('should send data if issue keys are only present in commits', async () => {
+  test('should send data if issue keys are only present in commits', async () => {
     const { processInstallation } = require('../../../lib/sync/installation');
 
     const job = createJob({ data: { installationId, jiraHost }, opts: { delay } });
@@ -243,5 +250,5 @@ describe('sync/branches', () => {
 
     await processInstallation(queues)(job);
     expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
-  }); */
+  });
 });

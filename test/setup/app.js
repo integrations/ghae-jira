@@ -33,6 +33,7 @@ beforeEach(async () => {
     .thenReturn({
       jiraHost: process.env.ATLASSIAN_URL,
       sharedSecret: process.env.ATLASSIAN_SECRET,
+      githubHost: process.env.GHAE_HOST,
     });
 
   td.when(models.Subscription.getAllForInstallation(1234, 'test.ghaekube.net'))
@@ -68,9 +69,18 @@ beforeEach(async () => {
       githubHost: 'appinstalled.ghaekube.net', state: 'abc1234', createdAt: new Date(), remove: () => Promise.resolve(),
     });
 
+  td.when(models.AppSecrets.getForHost(process.env.GHAE_HOST))
+    .thenReturn({
+      clientId: '12213',
+      appId: '12257',
+      privateKey: getPrivateKey(),
+    });
+
   td.when(models.AppSecrets.getForHost('appinstalled.ghaekube.net'))
     .thenReturn({
       clientId: '12213',
+      appId: '12257',
+      privateKey: getPrivateKey(),
     });
 
   nock('https://api.github.com')
@@ -82,6 +92,18 @@ beforeEach(async () => {
     .get('/repos/test-repo-owner/test-repo-name/contents/.github/jira.yml')
     .reply(200, {
       content: Buffer.from(`jira: ${process.env.ATLASSIAN_URL}`).toString('base64'),
+    });
+
+  nock('https://abc.ghaekube.net')
+    .post('/api/v3/app/installations/1234/access_tokens')
+    .reply(200, {
+      token: 'mocked-token',
+      expires_at: '9999-12-31T23:59:59Z',
+      permissions: 'read',
+    })
+    .get('/repos/test-repo-owner/test-repo-name/contents/.github/jira.yml')
+    .reply(200, {
+      content: Buffer.from(`jira: ${process.env.GHAE_URL}`).toString('base64'),
     });
 
   nock('https://ghaebuild4123test.ghaekube.net')

@@ -4,6 +4,7 @@ describe('GitHub Actions', () => {
 
   describe('add to push queue', () => {
     beforeEach(() => {
+      jest.setTimeout(30000);
       process.env.REDIS_URL = 'redis://test';
       const { queues } = require('../../lib/worker');
       push = td.replace(queues, 'push');
@@ -23,13 +24,13 @@ describe('GitHub Actions', () => {
       ));
     });
 
-    /* it('should not add push event to the queue if there are no Jira issue keys present', async (done) => {
+    it('should not add push event to the queue if there are no Jira issue keys present', async (done) => {
       const event = require('../fixtures/push-no-issues.json');
       await app.receive(event);
       done();
     });
 
-     it('should handle payloads where only some commits have issue keys', async () => {
+    it('should handle payloads where only some commits have issue keys', async () => {
       const event = require('../fixtures/push-mixed.json');
       await app.receive(event);
       td.verify(push.add(
@@ -46,10 +47,11 @@ describe('GitHub Actions', () => {
     });
   });
 
-    describe('process push payloads', () => {
+  describe('process push payloads', () => {
     beforeEach(() => {
       jiraApi = td.api(process.env.ATLASSIAN_URL);
       githubApi = td.api('https://api.github.com');
+      ghaeInstanceApi = td.api('https://abc.ghaekube.net');
       processPush = require('../../lib/transforms/push').processPush;
       createJobData = require('../../lib/transforms/push').createJobData;
       Date.now = jest.fn(() => 12345678);
@@ -61,7 +63,9 @@ describe('GitHub Actions', () => {
         data: createJobData(event.payload, process.env.ATLASSIAN_URL),
       };
 
-      td.when(githubApi.get('/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+      td.when(githubApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+        .thenReturn(require('../fixtures/api/commit-no-username.json'));
+      td.when(ghaeInstanceApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
         .thenReturn(require('../fixtures/api/commit-no-username.json'));
 
       await processPush()(job);
@@ -128,7 +132,9 @@ describe('GitHub Actions', () => {
         data: createJobData(event.payload, process.env.ATLASSIAN_URL),
       };
 
-      td.when(githubApi.get('/repos/test-repo-owner/test-repo-name/commits/test-commit-id'))
+      td.when(githubApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/test-commit-id'))
+        .thenReturn(require('../fixtures/more-than-10-files.json'));
+      td.when(ghaeInstanceApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/test-commit-id'))
         .thenReturn(require('../fixtures/more-than-10-files.json'));
 
       await processPush()(job);
@@ -322,7 +328,7 @@ describe('GitHub Actions', () => {
     //   }))
     // })
 
-     it('should not run a command without a Jira issue', async () => {
+    it('should not run a command without a Jira issue', async () => {
       const payload = require('../fixtures/push-no-issues.json');
 
       td.when(jiraApi.post(), { ignoreExtraArgs: true })
@@ -349,9 +355,10 @@ describe('GitHub Actions', () => {
         data: createJobData(event.payload, process.env.ATLASSIAN_URL),
       };
 
-      td.when(githubApi.get('/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+      td.when(githubApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
         .thenReturn(require('../fixtures/push-merge-commit.json'));
-
+      td.when(ghaeInstanceApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+        .thenReturn(require('../fixtures/push-merge-commit.json'));
       await processPush()(job);
 
       td.verify(jiraApi.post('/rest/devinfo/0.10/bulk', {
@@ -412,7 +419,9 @@ describe('GitHub Actions', () => {
         data: createJobData(event.payload, process.env.ATLASSIAN_URL),
       };
 
-      td.when(githubApi.get('/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+      td.when(githubApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
+        .thenReturn(require('../fixtures/push-non-merge-commit'));
+      td.when(ghaeInstanceApi.get('/api/v3/repos/test-repo-owner/test-repo-name/commits/commit-no-username'))
         .thenReturn(require('../fixtures/push-non-merge-commit'));
 
       await processPush()(job);
@@ -467,6 +476,6 @@ describe('GitHub Actions', () => {
         ],
         properties: { installationId: 1234 },
       }));
-    }); */
+    });
   });
 });

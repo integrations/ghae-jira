@@ -123,7 +123,7 @@ describe('GitHub Actions', () => {
         properties: {
           installationId: 1234,
         },
-      })); 
+      }));
     });
 
     it('should only send 10 files if push contains more than 10 files changed', async () => {
@@ -239,7 +239,7 @@ describe('GitHub Actions', () => {
         properties: {
           installationId: 1234,
         },
-      })); 
+      }));
     });
 
     // Commenting these out for the moment. DevInfo API runs these
@@ -349,7 +349,7 @@ describe('GitHub Actions', () => {
       await app.receive(payload);
     });
 
-     it('should add the MERGE_COMMIT flag when a merge commit is made', async () => {
+    it('should add the MERGE_COMMIT flag when a merge commit is made', async () => {
       const event = require('../fixtures/push-no-username.json');
       const job = {
         data: createJobData(event.payload, process.env.ATLASSIAN_URL),
@@ -476,6 +476,6 @@ describe('GitHub Actions', () => {
         ],
         properties: { installationId: 1234 },
       }));
-    }); 
-  }); 
+    });
+  });
 });

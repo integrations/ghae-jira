@@ -15,9 +15,15 @@
   <body class="aui-page-hybrid">
     <div class="ac-content">
       <div class="page-content">
+        {{#if ghaeURL}}
+        <header class="title">
+         <h1><a class="ak-button ak-button__appearance-link" href="{{ ghaeURL }}" target="_blank">{{ ghaeURL }}</a> configuration</h1>
+        </header>
+        {{else}}
         <header class="title">
           <h1>{{ appName }} configuration</h1>
         </header>
+        {{/if}}
 
         {{#if hasConnections}}
         <nav class="actions">

@@ -10,6 +10,7 @@ describe('sync/commits', () => {
   let delay;
 
   beforeEach(() => {
+    jest.setTimeout(30000);
     const models = td.replace('../../../lib/models');
     const repoSyncStatus = {
       installationId: 12345678,
@@ -68,15 +69,22 @@ describe('sync/commits', () => {
     nock('https://api.github.com').post('/graphql', commitsWithLastCursor)
       .reply(200, emptyNodesFixture);
 
+    nock('https://abc.ghaekube.net').post('/api/graphql', getDefaultBranch)
+      .reply(200, defaultBranchFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsNoLastCursor)
+      .reply(200, commitNodesFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsWithLastCursor)
+      .reply(200, emptyNodesFixture);
+
     const queues = {
       installation: {
         add: jest.fn(),
       },
     };
-    // await processInstallation(queues)(job);
-    // expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
+    await processInstallation(queues)(job);
+    expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
 
-    /* td.verify(jiraApi.post('/rest/devinfo/0.10/bulk', {
+    td.verify(jiraApi.post('/rest/devinfo/0.10/bulk', {
       preventTransitions: true,
       repositories: [
         {
@@ -106,10 +114,10 @@ describe('sync/commits', () => {
       properties: {
         installationId: 1234,
       },
-    })); */
+    }));
   });
 
-  /* test('should send Jira all commits that have Issue Keys', async () => {
+  test('should send Jira all commits that have Issue Keys', async () => {
     const { processInstallation } = require('../../../lib/sync/installation');
 
     const job = createJob({ data: { installationId, jiraHost }, opts: { delay } });
@@ -123,6 +131,13 @@ describe('sync/commits', () => {
     nock('https://api.github.com').post('/graphql', commitsNoLastCursor)
       .reply(200, mixedCommitNodes);
     nock('https://api.github.com').post('/graphql', commitsWithLastCursor)
+      .reply(200, emptyNodesFixture);
+
+    nock('https://abc.ghaekube.net').post('/api/graphql', getDefaultBranch)
+      .reply(200, defaultBranchFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsNoLastCursor)
+      .reply(200, mixedCommitNodes);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsWithLastCursor)
       .reply(200, emptyNodesFixture);
 
     const queues = {
@@ -217,6 +232,13 @@ describe('sync/commits', () => {
     nock('https://api.github.com').post('/graphql', commitsWithLastCursor)
       .reply(200, emptyNodesFixture);
 
+    nock('https://abc.ghaekube.net').post('/api/graphql', getDefaultBranch)
+      .reply(200, defaultBranchFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsNoLastCursor)
+      .reply(200, commitNodesFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsWithLastCursor)
+      .reply(200, emptyNodesFixture);
+
     const queues = {
       installation: {
         add: jest.fn(),
@@ -274,6 +296,13 @@ describe('sync/commits', () => {
     nock('https://api.github.com').post('/graphql', commitsWithLastCursor)
       .reply(200, emptyNodesFixture);
 
+    nock('https://abc.ghaekube.net').post('/api/graphql', getDefaultBranch)
+      .reply(200, defaultBranchFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsNoLastCursor)
+      .reply(200, commitsNoKeys);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsWithLastCursor)
+      .reply(200, emptyNodesFixture);
+
     td.when(jiraApi.post(), { ignoreExtraArgs: true })
       .thenThrow(new Error('test error'));
 
@@ -299,6 +328,12 @@ describe('sync/commits', () => {
       .reply(200, emptyNodesFixture);
     nock('https://api.github.com').post('/graphql', commitsWithLastCursor)
       .reply(200, emptyNodesFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', getDefaultBranch)
+      .reply(200, defaultBranchFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsNoLastCursor)
+      .reply(200, emptyNodesFixture);
+    nock('https://abc.ghaekube.net').post('/api/graphql', commitsWithLastCursor)
+      .reply(200, emptyNodesFixture);
 
     td.when(jiraApi.post(), { ignoreExtraArgs: true })
       .thenThrow(new Error('test error'));
@@ -310,5 +345,5 @@ describe('sync/commits', () => {
     };
     await processInstallation(queues)(job);
     expect(queues.installation.add).toHaveBeenCalledWith(job.data, job.opts);
-  }); */
+  });
 });

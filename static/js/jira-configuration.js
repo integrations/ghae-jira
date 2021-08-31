@@ -18,16 +18,28 @@ $('.add-organization-link').click(function (event) {
 
 $('.add-ghae-organization-link').click(function (event) {
   event.preventDefault()
-  const githubHost = ((document.getElementById("githubHost")||{}).value)||"";
-  const child = window.open(`${appUrl}/github/login?jwt=${encodeURIComponent(params.get('jwt'))}&xdm_e=${encodeURIComponent(params.get('xdm_e'))}&githubHost=${encodeURIComponent(githubHost)}`)
 
-  const interval = setInterval(function () {
-    if (child.closed) {
-      clearInterval(interval)
+  $.ajax({
+    type: 'POST',
+    url: '/jira/configuration',
+    data: {
+      githubHost: ((document.getElementById("githubHost")||{}).value)||"",
+    },
+    success: function (data) {
+      const child = window.open(`${appUrl}/github/login?jwt=${encodeURIComponent(params.get('jwt'))}&xdm_e=${encodeURIComponent(params.get('xdm_e'))}&githubHost=${encodeURIComponent(data.ghaeHost)}`)
 
-      AP.navigator.reload()
+      const interval = setInterval(function () {
+        if (child.closed) {
+          clearInterval(interval)
+
+          AP.navigator.reload()
+        }
+      }, 100)
+    },
+    error: function (error) {
+      document.getElementById("errormessage").innerHTML = error.responseJSON.err;
     }
-  }, 100)
+  })
 })
 
 $('.configure-connection-link').click(function (event) {

@@ -38,12 +38,12 @@ describe('Frontend', () => {
         .expect(400));
 
       it('should return 400 for register if invalid ghaeHost parameter', () => supertest(subject)
-        .post('/register?ghaeHost=ghaebuild4123test.ghaekube.com')
+        .post('/register?ghaeHost=https://ghaebuild4123test.ghaekube.com')
         .send({})
         .expect(400));
 
       it('should return 200 for register', () => supertest(subject)
-        .post('/register?ghaeHost=ghaebuild4123test.ghaekube.net')
+        .post('/register?ghaeHost=https://ghaebuild4123test.ghaekube.net')
         .send({})
         .expect(200)
         .then(response => {

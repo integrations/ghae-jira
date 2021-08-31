@@ -18,6 +18,7 @@
     <form method="post" action="/github/setup">
       <input type="hidden" name="_csrf" value="{{csrfToken}}">
       <div class="input-group">
+        <input type="hidden" id="githubHost" name="githubHost" value="{{githubHost}}">
         <input class="form-control input-lg" type="text" name="jiraSubdomain" placeholder="Jira Cloud Site"
           aria-label="Jira Cloud Site" value="{{jiraSubdomain}}" autofocus>
         <span class="input-group-button">

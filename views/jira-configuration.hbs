@@ -15,9 +15,15 @@
   <body class="aui-page-hybrid">
     <div class="ac-content">
       <div class="page-content">
+        {{#if ghaeURL}}
+        <header class="title">
+         <h1><a class="ak-button ak-button__appearance-link" href="{{ ghaeURL }}" target="_blank">{{ ghaeURL }}</a> configuration</h1>
+        </header>
+        {{else}}
         <header class="title">
           <h1>{{ appName }} configuration</h1>
         </header>
+        {{/if}}
 
         {{#if hasConnections}}
         <nav class="actions">
@@ -185,8 +191,11 @@
                 <button class="ak-button ak-button__appearance-primary add-organization-link" disabled>Add an Organization</button>
               {{else}}
                 {{#if ghaeInstance}}
-                  <p>Enter Github AE host url</p><input type="text" id="githubHost" name="githubHost">
+                  <p>Enter GitHub AE account URL</p>
+                  <input class="form-control input-lg" type="text" placeholder="GitHub AE account URL" aria-label="GitHub AE account URL" id="githubHost" name="githubHost" autofocus>
                   <button class="ak-button ak-button__appearance-primary add-ghae-organization-link">Add an Github AE Organization</button>
+                  <div class="flash flash-error mb-2 inline-error-message" id="errormessage">
+                  </div>
                 {{else}}
                   <button class="ak-button ak-button__appearance-primary add-organization-link">Add an Organization</button>
                 {{/if}}
